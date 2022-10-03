@@ -1,0 +1,54 @@
+Registers Instructions:
+    - "PUT reg val/reg" : Puts the value of val/reg in the register arg.
+    - "ADD reg1 reg2/val reg3/val" : Puts the sum of reg2/val and reg3/val in reg1.
+    - "SUB reg1 reg2/val reg3/val" : Puts the subtraction of reg2/val and reg3/val in reg1.
+    - "MUL reg1 reg2/val reg3/val" : Puts the multiplication of reg2/val and reg3/val in reg1.
+    - "DIV reg1 reg2/val reg3/val" : Puts the division of reg2/val and reg3/val in reg1.
+    - "MOD reg1 reg2 reg3/val" : Puts the module of reg2/val and reg3/val in reg1.
+    - "INC reg" : Increments the value of reg by 1.
+    - "DEC reg" : Decrements the value of reg by 1.
+    - "FREE reg" : Frees the value of reg.
+    - "SWAP reg1 reg2" : Swaps the values of reg1 and reg2.
+    - "COPY reg1 reg2" : Copies the values of reg1 in reg2.
+
+    (N.B. in some instructions the same register can be used more than once, e.g. "ADD reg reg reg" is valid)
+
+Jump Instructions:
+    Labels are contained in a stack, therefore it is not possible to load two etiquette and jumping to the "oldest" one.
+    - "JMP label" : Jumps to the label.
+    - "JZ reg label" : Jumps to the label if reg is 0.
+    - "JNZ reg label" : Jumps to the label if reg is not 0.
+    - "JE reg1 reg2/val label" : Jumps to the label if reg1 is equal to reg2/val.
+    - "JNE reg1 reg2/val label" : Jumps to the label if reg1 is not equal to reg2/val.
+    - "JG reg1 reg2/val label" : Jumps to the label if reg1 is greater than reg2/val.
+    - "JL reg1 reg2/val label" : Jumps to the label if reg1 is less than reg2/val.
+    - "JGE reg1 reg2/val label" : Jumps to the label if reg1 is greater or equal to reg2/val.
+    - "JLE reg1 reg2/val label" : Jumps to the label if reg1 is less or equal to reg2/val.
+
+Cycle Instructions:
+    - "ITER_FOR |dest_reg:val| (...) |" : Executes the instructions between the parenthesis val times, dest_reg is used
+        to store the current cycle iteration number.
+    - "ITER_THROUGH | start_red : end_reg | -> dest_reg | (...) |" : Executes the instructions between the parenthesis
+        from start_reg to end_reg (both registers must belong to the same registers type), dest_reg is used to store the
+        actual register.
+        [e.g.
+            ...
+            PUT A01 65
+            PUT A02 66
+            PUT A03 67
+            ITER_THR0UGH |A01:A03| -> E01 (
+                _ASCII E01
+            )
+            ...
+
+            Output: ABC
+        ]
+
+
+Console Instructions:
+    - "_SHOW reg" : Prints the value of reg/var.
+    - "_ASCII reg" : Prints the ASCII character of reg/var.
+    - "_HEX reg" : Prints the hexadecimal value of reg/var.
+    - "_CLS" : Clears the console.
+    - "_NEWL" : Prints a new line.
+    - "_TAB" : Prints a tab.

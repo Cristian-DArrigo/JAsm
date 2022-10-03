@@ -1,0 +1,11 @@
+PUT E0 0
+PUT A0 0
+outer:
+    PUT A1 0
+    inner:
+        INC E0
+        INC A1
+        JL A1 10 inner
+    _SHOW E0
+    INC A0
+    JL A0 10 outer

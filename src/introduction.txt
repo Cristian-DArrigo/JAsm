@@ -1,0 +1,11 @@
+JAsm (Java Assembly) is a Java-interpreted assembly-like code. It is designed to be a simple, easy to use, and easy to learn language.
+JAsmVM (Java Assembly Virtual Machine) is a Java-based virtual machine for JAsm. It is designed to provide a small and easy to use
+virtual environment for writing and running JAsm, it is also useful because it displays every modification occurred to memory and registers.
+JAsm memory structure is based on 3 main components:
+    - Registers (4 registers, each one separated into 5 parts of 8 bits each (e.g. X0, X1, ..., X9)), mainly used for storing
+        temporary values and for arithmetic operations.
+    - Memory (256 bytes of memory), used to store data from variables declared in the code.
+    - Variables Name Table (256 bytes of memory), used to store the names of the variables declared in the code and their
+        addresses in memory so that the program could retrieve the value of a variable by doing a cross-reference through
+        the memory and the VNT.
+While in the memory it will be possible to store any kind of data (numbers, characters, strings), in the registers only numbers will be stored.

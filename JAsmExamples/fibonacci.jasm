@@ -1,0 +1,14 @@
+// Fibonacci Series - Iterative
+PUT A0 10
+PUT B0 1
+PUT B1 1
+PUT B2 0
+PUT C0 0
+
+start:
+    _SHOW B0
+    ADD B2 B0 B1
+    PUT B0 B1
+    PUT B1 B2
+    INC C0
+    JL C0 A0 start
