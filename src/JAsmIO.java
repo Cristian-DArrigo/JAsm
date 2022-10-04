@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 public class JAsmIO {
-    private static final String ext = ".jasm";
+    private static final String ext = ".jasm" + JAsmCompiler.compiledSuffix;
 
     // method to open a file and to check its extension
     public static String[] OpenFile(String path) throws IOException {

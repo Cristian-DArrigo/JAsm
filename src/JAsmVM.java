@@ -8,6 +8,7 @@ public class JAsmVM {
 
     private final Stack stack;
     private final JAsmInterpreter interpreter;
+    private final JAsmCompiler compiler;
     private HashMap<String, Integer> registers;
     private final String[] registersSet = {"A", "B", "C", "D", "E", "Z"};
 
@@ -16,9 +17,12 @@ public class JAsmVM {
         stack = new Stack();
         initRegisters();
         interpreter = new JAsmInterpreter(this);
+        compiler = new JAsmCompiler();
     }
 
-    public void run(String path) throws IOException {
+    public void run(String path) throws IOException, JAsmCompiler.CompilationError {
+        compiler.compile(path);
+        path = path + JAsmCompiler.compiledSuffix;
         interpreter.execute(JAsmIO.OpenFile(path));
     }
 
