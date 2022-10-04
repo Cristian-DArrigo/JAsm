@@ -1,6 +1,6 @@
 public class JAsmInterpreter {
     private final JAsmVM vm;
-    private int programCounter = 0;
+    private int programCounter;
 
     // private static final String[] instructionsSet = {"PUT", "ADD", "SUB", "MUL", "DIV", "MOD", "INC", "DEC", "FREE", "SWAP", "COPY", "JMP", "JZ", "JNZ", "JE", "JNE", "JG", "JL", "JGE", "JLE", "ITER_THROUGH", "ITER_FOR", "_SHOW", "_ASCII", "_HEX", "_CLS", "_NEWL", "_TAB"};
 
@@ -248,60 +248,40 @@ public class JAsmInterpreter {
         }
     }
 
-    private void jmp(String label) {
-        if (vm.containsEtiquette(label)) {
-            programCounter = vm.popEtiquette().getLineNumber();
-        } else {
-            throw new IllegalArgumentException("Invalid label: " + label + " at line " + programCounter);
-        }
+    private void jmp(String lineNumber) {
+        programCounter = Integer.parseInt(lineNumber);
     }
 
-    private void jz(String reg, String label) {
+    private void jz(String reg, String lineNumber) {
         if (vm.isValidRegister(reg)) {
             if (vm.get(reg) == 0) {
-                jmp(label);
-            } else if (vm.containsEtiquette(label)) {
-                vm.popEtiquette();
-            } else {
-                throw new IllegalArgumentException("Invalid label: " + label + " at line " + programCounter);
+                jmp(lineNumber);
             }
         } else {
             throw new IllegalArgumentException("Invalid register: " + reg + " at line " + programCounter);
         }
     }
 
-    private void jnz(String reg, String label) {
+    private void jnz(String reg, String lineNumber) {
         if (vm.isValidRegister(reg)) {
             if (vm.get(reg) != 0) {
-                jmp(label);
-            } else if (vm.containsEtiquette(label)) {
-                vm.popEtiquette();
-            } else {
-                throw new IllegalArgumentException("Invalid label: " + label + " at line " + programCounter);
+                jmp(lineNumber);
             }
         } else {
             throw new IllegalArgumentException("Invalid register: " + reg + " at line " + programCounter);
         }
     }
 
-    private void je(String reg1, String reg2, String label) {
+    private void je(String reg1, String reg2, String lineNumber) {
         // reg 2 could be a number
         if (vm.isValidRegister(reg1) && vm.isValidRegister(reg2)) {
             if (vm.get(reg1) == vm.get(reg2)) {
-                jmp(label);
-            } else if (vm.containsEtiquette(label)) {
-                vm.popEtiquette();
-            } else {
-                throw new IllegalArgumentException("Invalid label: " + label + " at line " + programCounter);
+                jmp(lineNumber);
             }
         } else if (vm.isValidRegister(reg1) && !vm.isValidRegister(reg2)) {
             try {
                 if (vm.get(reg1) == Integer.parseInt(reg2)) {
-                    jmp(label);
-                } else if (vm.containsEtiquette(label)) {
-                    vm.popEtiquette();
-                } else {
-                    throw new IllegalArgumentException("Invalid label: " + label + " at line " + programCounter);
+                    jmp(lineNumber);
                 }
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException("Invalid number format: " + e.getMessage());
@@ -311,24 +291,16 @@ public class JAsmInterpreter {
         }
     }
 
-    private void jne(String reg1, String reg2, String label) {
+    private void jne(String reg1, String reg2, String lineNumber) {
         // reg 2 could be a number
         if (vm.isValidRegister(reg1) && vm.isValidRegister(reg2)) {
             if (vm.get(reg1) != vm.get(reg2)) {
-                jmp(label);
-            } else if (vm.containsEtiquette(label)) {
-                vm.popEtiquette();
-            } else {
-                throw new IllegalArgumentException("Invalid label: " + label + " at line " + programCounter);
+                jmp(lineNumber);
             }
         } else if (vm.isValidRegister(reg1) && !vm.isValidRegister(reg2)) {
             try {
                 if (vm.get(reg1) != Integer.parseInt(reg2)) {
-                    jmp(label);
-                } else if (vm.containsEtiquette(label)) {
-                    vm.popEtiquette();
-                } else {
-                    throw new IllegalArgumentException("Invalid label: " + label + " at line " + programCounter);
+                    jmp(lineNumber);
                 }
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException("Invalid number format: " + e.getMessage());
@@ -338,24 +310,16 @@ public class JAsmInterpreter {
         }
     }
 
-    private void jg(String reg1, String reg2, String label) {
+    private void jg(String reg1, String reg2, String lineNumber) {
         // reg 2 could be a number
         if (vm.isValidRegister(reg1) && vm.isValidRegister(reg2)) {
             if (vm.get(reg1) > vm.get(reg2)) {
-                jmp(label);
-            } else if (vm.containsEtiquette(label)) {
-                vm.popEtiquette();
-            } else {
-                throw new IllegalArgumentException("Invalid label: " + label + " at line " + programCounter);
+                jmp(lineNumber);
             }
         } else if (vm.isValidRegister(reg1) && !vm.isValidRegister(reg2)) {
             try {
                 if (vm.get(reg1) > Integer.parseInt(reg2)) {
-                    jmp(label);
-                } else if (vm.containsEtiquette(label)) {
-                    vm.popEtiquette();
-                } else {
-                    throw new IllegalArgumentException("Invalid label: " + label + " at line " + programCounter);
+                    jmp(lineNumber);
                 }
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException("Invalid number format: " + e.getMessage());
@@ -365,24 +329,16 @@ public class JAsmInterpreter {
         }
     }
 
-    private void jl(String reg1, String reg2, String label) {
+    private void jl(String reg1, String reg2, String lineNumber) {
         // reg 2 could be a number
         if (vm.isValidRegister(reg1) && vm.isValidRegister(reg2)) {
             if (vm.get(reg1) < vm.get(reg2)) {
-                jmp(label);
-            } else if (vm.containsEtiquette(label)) {
-                vm.popEtiquette();
-            } else {
-                throw new IllegalArgumentException("Invalid label: " + label + " at line " + programCounter);
+                jmp(lineNumber);
             }
         } else if (vm.isValidRegister(reg1) && !vm.isValidRegister(reg2)) {
             try {
                 if (vm.get(reg1) < Integer.parseInt(reg2)) {
-                    jmp(label);
-                } else if (vm.containsEtiquette(label)) {
-                    vm.popEtiquette();
-                } else {
-                    throw new IllegalArgumentException("Invalid label: " + label + " at line " + programCounter);
+                    jmp(lineNumber);
                 }
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException("Invalid number format: " + e.getMessage());
@@ -392,24 +348,16 @@ public class JAsmInterpreter {
         }
     }
 
-    private void jge(String reg1, String reg2, String label) {
+    private void jge(String reg1, String reg2, String lineNumber) {
         // reg 2 could be a number
         if (vm.isValidRegister(reg1) && vm.isValidRegister(reg2)) {
             if (vm.get(reg1) >= vm.get(reg2)) {
-                jmp(label);
-            } else if (vm.containsEtiquette(label)) {
-                vm.popEtiquette();
-            } else {
-                throw new IllegalArgumentException("Invalid label: " + label + " at line " + programCounter);
+                jmp(lineNumber);
             }
         } else if (vm.isValidRegister(reg1) && !vm.isValidRegister(reg2)) {
             try {
                 if (vm.get(reg1) >= Integer.parseInt(reg2)) {
-                    jmp(label);
-                } else if (vm.containsEtiquette(label)) {
-                    vm.popEtiquette();
-                } else {
-                    throw new IllegalArgumentException("Invalid label: " + label + " at line " + programCounter);
+                    jmp(lineNumber);
                 }
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException("Invalid number format: " + e.getMessage());
@@ -419,24 +367,16 @@ public class JAsmInterpreter {
         }
     }
 
-    private void jle(String reg1, String reg2, String label) {
+    private void jle(String reg1, String reg2, String lineNumber) {
         // reg 2 could be a number
         if (vm.isValidRegister(reg1) && vm.isValidRegister(reg2)) {
             if (vm.get(reg1) <= vm.get(reg2)) {
-                jmp(label);
-            } else if (vm.containsEtiquette(label)) {
-                vm.popEtiquette();
-            } else {
-                throw new IllegalArgumentException("Invalid label: " + label + " at line " + programCounter);
+                jmp(lineNumber);
             }
         } else if (vm.isValidRegister(reg1) && !vm.isValidRegister(reg2)) {
             try {
                 if (vm.get(reg1) <= Integer.parseInt(reg2)) {
-                    jmp(label);
-                } else if (vm.containsEtiquette(label)) {
-                    vm.popEtiquette();
-                } else {
-                    throw new IllegalArgumentException("Invalid label: " + label + " at line " + programCounter);
+                    jmp(lineNumber);
                 }
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException("Invalid number format: " + e.getMessage());
@@ -552,17 +492,7 @@ public class JAsmInterpreter {
         for (programCounter = 1; programCounter <= lines.length; programCounter++) {
             String line = lines[programCounter - 1];
             if (!(line.startsWith(commentDelimiter) || line.isEmpty() || line.equals("\n"))) { // skip comments and empty lines
-                // normalize lines starting with whitespaces
-                if (line.startsWith(" ")) {
-                    int i = 0;
-                    while (line.charAt(i) == ' ') {
-                        i++;
-                    }
-                    line = line.substring(i);
-                }
-                // System.out.println("'" + line + "'");
                 executeLine(line);
-                // vm.showStack();
             }
         }
     }
