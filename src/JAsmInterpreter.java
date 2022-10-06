@@ -1,28 +1,29 @@
 public class JAsmInterpreter {
+    public static class SyntaxError extends Exception {
+        public SyntaxError(String message) {
+            super(message);
+        }
+    }
+
     private final JAsmVM vm;
     private int programCounter;
-
-    // private static final String[] instructionsSet = {"PUT", "ADD", "SUB", "MUL", "DIV", "MOD", "INC", "DEC", "FREE", "SWAP", "COPY", "JMP", "JZ", "JNZ", "JE", "JNE", "JG", "JL", "JGE", "JLE", "ITER_THROUGH", "ITER_FOR", "_SHOW", "_ASCII", "_HEX", "_CLS", "_NEWL", "_TAB"};
-
     private static final String commentDelimiter = "//";
 
     public JAsmInterpreter(JAsmVM vm) {
         this.vm = vm;
     }
 
-    public void executeLine(String line) {
+    public void executeLine(String line) throws SyntaxError {
         // we here need to understand how the line is structured and then execute it appropriately
         if (line.contains(commentDelimiter)) {
             executeLine(line.substring(0, line.indexOf(commentDelimiter)));
         }
 
         String[] args = line.split(" ");
-        // if the first argument is an etiquette (has ":" after a word) we need to push the etiquette:programCounter pair to the stack
-        // and then execute the rest of the line
+        // if the first argument is an etiquette (has ":" after a word) we dont need to do anything as the compiler
+        // has already replaced the etiquette with the line numbers, so we just skip this line if it was the label only,
+        // otherwise we execute the instruction
         if (args[0].contains(":")) {
-            String[] etiquette = args[0].split(":");
-            vm.pushEtiquette(etiquette[0], programCounter - 1);
-            // if the line was only the etiquette, we don't need to execute it
             if (args.length == 1) {
                 return;
             }
@@ -74,7 +75,7 @@ public class JAsmInterpreter {
             case "_NEWL" -> this._newl(); // print a new line
             case "_TAB" -> this._tab(); // print a tab
 
-            default -> throw new IllegalStateException("Unexpected instruction value: '" + instruction + "'");
+            default -> throw new SyntaxError("Unexpected instruction value: '" + instruction + "'");
         }
     }
 
@@ -488,12 +489,10 @@ public class JAsmInterpreter {
         System.out.print("\t");
     }
 
-    public void execute(String[] lines) {
+    public void execute(String[] lines) throws SyntaxError {
         for (programCounter = 1; programCounter <= lines.length; programCounter++) {
             String line = lines[programCounter - 1];
-            if (!(line.startsWith(commentDelimiter) || line.isEmpty() || line.equals("\n"))) { // skip comments and empty lines
-                executeLine(line);
-            }
+            executeLine(line);
         }
     }
 }

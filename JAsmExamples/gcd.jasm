@@ -1,11 +1,10 @@
 // Greatest Common Divisor
-PUT A0 20
-PUT A1 5
-PUT B0 1
-PUT E0 0
+PUT A0 20  // a
+PUT A1 5  // b
 start:
-    MOD C0 A0 B0
-    MOD C1 A1 B0
-    INC B0
+    MOD C0 A0 A1
+    PUT A0 A1
+    PUT A1 C0
+    JG C0 0 start
 
-    JNE A0 A1 start
+_SHOW A1

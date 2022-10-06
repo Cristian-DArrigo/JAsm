@@ -20,12 +20,6 @@ public class JAsmCompiler {
     }
 
     public void compile(String path) throws IOException, CompilationError {
-        // we need to compile the file passed as argument,
-        // the compilation consists in:
-        // 1. changing the etiquette refs with the line number where the file etiquette was defined.
-        // 2. delete all the whitespaces from the start of the lines.
-        // After the compilation, we have to save the file as "previous_name.JAsm~"
-
         File file = new File(path);
         String[] lines = Files.readAllLines(file.toPath()).toArray(new String[0]);
         String[] compiled = new String[lines.length];
@@ -33,29 +27,26 @@ public class JAsmCompiler {
         lines = render(lines);
         ParseEtiquette(lines);
 
-        int programCounter;
-        for (programCounter = 1; programCounter <= lines.length; programCounter++) {
+        for (int programCounter = 1; programCounter <= lines.length; programCounter++) {
             String line = lines[programCounter - 1];
-            if (!(line.startsWith(commentDelimiter) || line.isEmpty() || line.equals("\n"))) { // skip comments and empty lines
-                String[] args = line.split(" ");
-                if (args[0].startsWith("J")) { // Jump instruction
-                    int etiquetteIndex;
-                    if (args[0].equals("JMP")) {
-                        etiquetteIndex = 1;
-                    } else if (args[0].equals("JZ") || args[0].equals("JNZ")) {
-                        etiquetteIndex = 2;
-                    } else {
-                        etiquetteIndex = 3;
-                    }
-                    if (etiquetteMap.containsKey(args[etiquetteIndex])) {
-                        line = line.replace(args[etiquetteIndex], String.valueOf(etiquetteMap.get(args[etiquetteIndex])));
-                    } else {
-                        throw new CompilationError("The etiquette '" + args[etiquetteIndex] + "' was not defined");
-                    }
-                }
-                compiled[programCounter - 1] = line;
-            }
 
+            String[] args = line.split(" ");
+            if (args[0].startsWith("J")) { // Jump instruction
+                int etiquetteIndex;
+                if (args[0].equals("JMP")) {
+                    etiquetteIndex = 1;
+                } else if (args[0].equals("JZ") || args[0].equals("JNZ")) {
+                    etiquetteIndex = 2;
+                } else {
+                    etiquetteIndex = 3;
+                }
+                if (etiquetteMap.containsKey(args[etiquetteIndex])) {
+                    line = line.replace(args[etiquetteIndex], String.valueOf(etiquetteMap.get(args[etiquetteIndex])));
+                } else {
+                    throw new CompilationError("The etiquette '" + args[etiquetteIndex] + " was not defined");
+                }
+            }
+            compiled[programCounter - 1] = line;
         }
         saveCompiledFile(path, compiled);
     }
@@ -88,16 +79,15 @@ public class JAsmCompiler {
         return rendered;
     }
 
-    private void saveCompiledFile(String path, String[] compiled) throws IOException, CompilationError {
+    private void saveCompiledFile(String path, String[] compiled) throws IOException {
         File file = new File(path + compiledSuffix);
         if (!file.createNewFile()) {
-            throw new CompilationError("Could not create file '" + path + compiledSuffix + "', check your filename.");
+            System.out.println(path + compiledSuffix + " already exists. Overwriting...");
         }
         FileWriter writer = new FileWriter(file);
         for (String line : compiled) {
             if (line != null) {
                 writer.write(line + System.lineSeparator());
-                // System.out.println(line);
             }
         }
         writer.close();
@@ -113,7 +103,7 @@ public class JAsmCompiler {
                     if (!etiquetteMap.containsKey(etiquette)) {
                         etiquetteMap.put(etiquette, lineNumber);
                     } else {
-                        throw new CompilationError("Etiquette '" + args[0] + "' already defined at line " + etiquetteMap.get(etiquette) + ".");
+                        throw new CompilationError("Etiquette '" + etiquette + "' already defined at line " + etiquetteMap.get(etiquette) + ".");
                     }
                 }
                 lineNumber++;

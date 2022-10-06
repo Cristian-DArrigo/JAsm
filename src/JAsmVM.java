@@ -20,7 +20,7 @@ public class JAsmVM {
         compiler = new JAsmCompiler();
     }
 
-    public void run(String path) throws IOException, JAsmCompiler.CompilationError {
+    public void run(String path) throws IOException, JAsmCompiler.CompilationError, JAsmInterpreter.SyntaxError {
         compiler.compile(path);
         path = path + JAsmCompiler.compiledSuffix;
         interpreter.execute(JAsmIO.OpenFile(path));
@@ -50,22 +50,6 @@ public class JAsmVM {
 
     public int get(String register) {
         return registers.get(register);
-    }
-
-    public boolean containsEtiquette(String etiquette) {
-        return stack.peek().getEtiquette().equals(etiquette);
-    }
-
-    public void pushEtiquette(String etiquette, int programCounter) {
-        stack.push(etiquette, programCounter);
-    }
-
-    public Stack.Node popEtiquette() {
-        return stack.pop();
-    }
-
-    public String[] getRegistersSet() {
-        return registersSet;
     }
 
     public void put(String reg, int value) {

@@ -1,4 +1,3 @@
-// Nested Loops
 PUT E0 0
 PUT A0 0
 outer:

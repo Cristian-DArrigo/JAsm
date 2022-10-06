@@ -1,5 +1,5 @@
 // Fibonacci Series - Iterative
-PUT A0 10
+PUT A0 20
 PUT B0 1
 PUT B1 1
 PUT B2 0
