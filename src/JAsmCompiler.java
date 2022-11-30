@@ -43,7 +43,7 @@ public class JAsmCompiler {
                 if (etiquetteMap.containsKey(args[etiquetteIndex])) {
                     line = line.replace(args[etiquetteIndex], String.valueOf(etiquetteMap.get(args[etiquetteIndex])));
                 } else {
-                    throw new CompilationError("The etiquette '" + args[etiquetteIndex] + " was not defined");
+                    throw new CompilationError("The etiquette '" + args[etiquetteIndex] + "' was not defined");
                 }
             }
             compiled[programCounter - 1] = line;
