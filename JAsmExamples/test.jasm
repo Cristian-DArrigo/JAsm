@@ -1,0 +1,34 @@
+// Calculate distance between two points
+// (x1, y1) and (x2, y2)
+
+PUT A0 3    // x1
+PUT A1 4    // y1
+PUT A2 7    // x2
+PUT A3 2    // y2
+
+// Calculate (x2 - x1)^2
+SUB B0 A2 A0   // B0 = x2 - x1
+MUL B0 B0 B0   // B0 = (x2 - x1)^2
+
+// Calculate (y2 - y1)^2
+SUB B1 A3 A1   // B1 = y2 - y1
+MUL B1 B1 B1   // B1 = (y2 - y1)^2
+
+// Calculate (x2 - x1)^2 + (y2 - y1)^2
+ADD B2 B0 B1   // B2 = (x2 - x1)^2 + (y2 - y1)^2
+
+// Calculate square root of (x2 - x1)^2 + (y2 - y1)^2
+PUT C0 0       // Counter
+PUT C1 1       // Initial guess
+PUT C2 0       // Temp register
+label:
+  MUL C2 C1 C1       // C2 = C1 * C1
+  SUB C3 C2 B2       // C3 = C2 - B2
+  JZ C3 end         // If C2 == B2, jump to end
+  DIV C4 B2 C2      // C4 = B2 / C2
+  ADD C5 C2 C4      // C5 = C2 + C4
+  DIV C1 C5 C0      // C1 = C5 / 2
+  INC C0            // Increment counter
+  JL C0 10 label    // If counter < 10, jump to label
+end:
+  _SHOW C1         // Print result

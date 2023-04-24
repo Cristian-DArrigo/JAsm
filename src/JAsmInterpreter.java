@@ -163,6 +163,9 @@ public class JAsmInterpreter {
         if (vm.isValidRegister(dest)) {
             try {
                 if (vm.isValidRegister(arg1) && vm.isValidRegister(arg2)) {
+                    if (vm.get(arg2) == 0) {
+                        throw new ArithmeticException("Division by zero");
+                    }
                     vm.put(dest, vm.get(arg1) / vm.get(arg2));
                 } else if (vm.isValidRegister(arg1) && !vm.isValidRegister(arg2)) {
                     vm.put(dest, vm.get(arg1) / Integer.parseInt(arg2));
